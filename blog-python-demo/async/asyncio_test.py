@@ -6,6 +6,7 @@
 @date  : 2020/10/28
 """
 import asyncio
+from time import sleep, strftime
 
 
 @asyncio.coroutine
@@ -16,9 +17,18 @@ def hello():
     print("Hello again!")
 
 
+async def test():
+    task1 = asyncio.create_task(asyncio.sleep(1))
+    task2 = asyncio.create_task(asyncio.sleep(2))
+    print(f"begin {strftime('%X')}")
+    await task1
+    await task2
+    print(f'over {strftime("%X")}')
+
+
+async def pause(delay):
+    await asyncio.sleep(delay)
+
+
 if __name__ == '__main__':
-    # 获取EventLoop:
-    loop = asyncio.get_event_loop()
-    # 执行coroutine
-    loop.run_until_complete(hello())
-    loop.close()
+    asyncio.run(test())

@@ -5,6 +5,7 @@
 @author: hch
 @date  : 2020/10/28
 """
+from time import sleep
 from types import GeneratorType
 
 
@@ -46,6 +47,14 @@ def gen2(itr):
     #     yield t
 
 
+def gen3():
+    n = 0
+    while True:
+        sleep(1)
+        yield n
+        n += 1
+
+
 if __name__ == '__main__':
     producer(consumer())
 
@@ -55,10 +64,11 @@ if __name__ == '__main__':
     print(g.send(2))
     print(g.send(3))
     print(g.send(4))
-    print(g.send(None))
+    # print(g.send(None))
 
     g = gen2(['a', 'b', 'c'])
     print(g.send(None))
     print(g.send(None))
     # print(g.send(1)) # AttributeError: 'list_iterator' object has no attribute 'send'
 
+    print(gen3().send(None))
