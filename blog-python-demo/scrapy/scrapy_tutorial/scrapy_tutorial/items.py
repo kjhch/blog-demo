@@ -12,3 +12,9 @@ class ScrapyTutorialItem(scrapy.Item):
     name = scrapy.Field()
     title = scrapy.Field()
     info = scrapy.Field()
+
+
+class Quote(scrapy.Item):
+    text = scrapy.Field()
+    author = scrapy.Field()
+    tags = scrapy.Field()

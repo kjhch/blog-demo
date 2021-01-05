@@ -22,3 +22,21 @@ scrapy crawl itcast -o teachers.xml
 
 # 注意：输出不会覆盖已存在的文件 
 ```
+Scrapy 中的数据流由引擎控制，数据流的过程如下 。
+1. Engine首先打开一个网站，找到处理该网站的 Spider，并向该 Spider请求第一个要爬取的 URL。 
+2. Engine从 Spider中获取到第一个要爬取的 URL，并通过 Scheduler以 Request的形式调度。
+3. Engine 向 Scheduler请求下一个要爬取的 URL。
+4. Scheduler返回下一个要爬取的 URL给 Engine, Engine将 URL通过 DownloaderMiddJewares转
+发给 Downloader下载。
+5. 一旦页面下载完毕， Downloader生成该页面的 Response，并将其通过 DownloaderMiddlewares
+发送给 Engine。
+6. Engine从下载器中接收到lResponse，并将其通过 SpiderMiddlewares发送给 Spider处理。
+7. Spider处理 Response，并返回爬取到的 Item及新的 Request给 Engine。
+8. Engine将 Spider返回的 Item 给 Item Pipeline，将新 的 Request给 Scheduler。 
+9. 重复第(2)步到第(8)步，直到 Scheduler中没有更多的 Request, Engine关闭该网站，爬取结束。
+
+我们常用 Item Pipeline来做如下操作：
+- 清理 HTML数据。
+- 验证爬取数据，检查爬取字段。 
+- 查重井丢弃重复内容。
+- 将爬取结果保存到数据库。

@@ -1,4 +1,4 @@
-# Scrapy settings for scrapy_tutorial project
+# Scrapy settings for douban project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,18 +7,17 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'scrapy_tutorial'
+BOT_NAME = 'douban'
 
-SPIDER_MODULES = ['scrapy_tutorial.spiders']
-NEWSPIDER_MODULE = 'scrapy_tutorial.spiders'
+SPIDER_MODULES = ['douban.spiders']
+NEWSPIDER_MODULE = 'douban.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'scrapy_tutorial (+http://www.yourdomain.com)'
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+#USER_AGENT = 'douban (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -46,13 +45,13 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'scrapy_tutorial.middlewares.ScrapyTutorialSpiderMiddleware': 543,
+#    'douban.middlewares.DoubanSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'scrapy_tutorial.middlewares.ScrapyTutorialDownloaderMiddleware': 543,
+#    'douban.middlewares.DoubanDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -63,10 +62,9 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   'scrapy_tutorial.pipelines.QuotePipeline': 300,
-   'scrapy_tutorial.pipelines.MongoPipeline': 400,
-}
+#ITEM_PIPELINES = {
+#    'douban.pipelines.DoubanPipeline': 300,
+#}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -88,8 +86,3 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-# 修改输出文件编码为utf-8
-FEED_EXPORT_ENCODING = 'utf-8'
-
-MONGO_URI = "mongodb://root:root@localhost:27017/spider?authSource=admin"
