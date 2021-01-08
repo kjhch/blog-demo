@@ -26,3 +26,6 @@ class QuoteSpider(scrapy.Spider):
                           author=r.css("small.author::text").get(),
                           tags=r.css("div.tags a.tag::text").getall())
             yield quote
+        next_page = response.css("li.next>a")
+        if next_page:
+            yield response.follow(next_page.attrib['href'])
