@@ -6,7 +6,6 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-import requests
 
 BOT_NAME = 'douban'
 
@@ -61,7 +60,7 @@ USER_AGENTS = [
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+# CONCURRENT_REQUESTS = 4
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -92,7 +91,10 @@ ROBOTSTXT_OBEY = False
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-   'douban.middlewares.RandomUserAgentMiddleware': 543,
+    'douban.middlewares.RandomUserAgentMiddleware': 543,
+    # 'douban.middlewares.ForbiddenRespMiddleware': 544,
+    'douban.middlewares.CustomRetryMiddleware': 545,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
 }
 
 # Enable or disable extensions
@@ -132,9 +134,13 @@ ITEM_PIPELINES = {
 # 禁止重定向
 REDIRECT_ENABLED = False
 # 301 302 403重试
-RETRY_HTTP_CODES = [500, 502, 503, 504, 522, 524, 408, 429, 301, 302, 403]
+# RETRY_HTTP_CODES = [500, 502, 503, 504, 522, 524, 408, 429, 301, 302, 403]
+DOWNLOAD_TIMEOUT = 10
+
+MONGO_URI = "mongodb://root:root@localhost:27017/spider?authSource=admin"
 
 if __name__ == '__main__':
+    import requests
     for ua in USER_AGENTS:
         headers = {
             'User-Agent': ua

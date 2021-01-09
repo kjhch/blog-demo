@@ -3,11 +3,14 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import random
+import urllib.parse
 
-from scrapy import signals
+from scrapy import signals, Request
+from scrapy.downloadermiddlewares.retry import RetryMiddleware
+from scrapy.http import HtmlResponse
+from scrapy.utils.response import response_status_message
 
-# useful for handling different item types with a single interface
-from itemadapter import is_item, ItemAdapter
+from douban.utils import del_proxy, get_proxy
 
 
 class DoubanSpiderMiddleware:
@@ -116,5 +119,74 @@ class RandomUserAgentMiddleware:
 
     def process_request(self, request, spider):
         ua = random.choice(self.user_agents)
-        # print(ua)
+        # print('RandomUserAgentMiddleware process_request', ua)
         request.headers['User-Agent'] = ua
+
+    # def process_response(self, request, response: HtmlResponse, spider):
+    #     print('RandomUserAgentMiddleware process_response')
+    #     return response
+
+
+class ForbiddenRespMiddleware:
+    @classmethod
+    def from_crawler(cls, crawler):
+        s = cls()
+        return s
+
+    # def process_request(self, request, spider):
+    #     print('ForbiddenRespMiddleware process_request')
+
+    def process_response(self, request: Request, response: HtmlResponse, spider):
+        print(response.status, response.url, '->', response.headers['Location'])
+
+        if 300 < response.status < 500:
+            proxy = request.meta.get('proxy')
+            print(response.url, response.status, request.meta)
+            if proxy:
+                del_proxy(urllib.parse.urlparse(proxy).netloc)
+            request.meta['proxy'] = "203.198.94.132:80"
+            # request.dont_filter = True
+            return request
+        return response
+
+    # def process_exception(self, request, exception, spider):
+    #     print('ForbiddenRespMiddleware process_exception',request.dont_filter)
+    #     return request
+
+
+class CustomRetryMiddleware(RetryMiddleware):
+
+    def switch_proxy(self, request: Request):
+        proxy = request.meta.get('proxy')
+        if proxy:
+            del_proxy(urllib.parse.urlparse(proxy).netloc)
+        request.meta['proxy'] = get_proxy()
+
+    def process_response(self, request, response, spider):
+        if request.meta.get('dont_retry', False):
+            return response
+        # 注意配置RETRY_HTTP_CODES
+        if response.status in self.retry_http_codes:
+            if response.status % 300 < 100:
+                print(response.status, response.url, '->', response.headers['Location'])
+            else:
+                print(response.status, response.url)
+            reason = response_status_message(response.status)
+            self.switch_proxy(request)
+            return self._retry(request, reason, spider) or response
+
+        return response
+
+    def process_exception(self, request, exception, spider):
+        # RetryMiddleware类里有个常量，记录了连接超时那些异常
+        # EXCEPTIONS_TO_RETRY = (defer.TimeoutError, TimeoutError, DNSLookupError,
+        #                       ConnectionRefusedError, ConnectionDone, ConnectError,
+        #                       ConnectionLost, TCPTimedOutError, ResponseFailed,
+        #                       IOError, TunnelError)
+        if isinstance(exception, self.EXCEPTIONS_TO_RETRY) and not request.meta.get('dont_retry', False):
+            self.switch_proxy(request)
+            return self._retry(request, exception, spider)
+        # _retry是RetryMiddleware中的一个私有方法，主要作用是
+        # 1.对request.meta中的retry_time进行+1
+        # 2.将retry_times和max_retry_time进行比较，如果前者小于等于后者，利用copy方法在原来的request上复制一个新request，并更新其retry_times，并将dont_filter设为True来防止因url重复而被过滤。
+        # 3.记录重试reason
