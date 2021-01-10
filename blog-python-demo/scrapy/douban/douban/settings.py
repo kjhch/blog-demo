@@ -134,7 +134,7 @@ ITEM_PIPELINES = {
 # 禁止重定向
 REDIRECT_ENABLED = False
 # 301 302 403重试
-# RETRY_HTTP_CODES = [500, 502, 503, 504, 522, 524, 408, 429, 301, 302, 403]
+RETRY_HTTP_CODES = [500, 502, 503, 504, 522, 524, 408, 429, 301, 302, 403]
 DOWNLOAD_TIMEOUT = 10
 
 MONGO_URI = "mongodb://root:root@localhost:27017/spider?authSource=admin"

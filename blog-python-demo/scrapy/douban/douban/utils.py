@@ -8,15 +8,17 @@ utils
 import requests
 
 SERVER = "localhost:5000"
+USE_PROXY = False
 
 
 def get_proxy():
     r = None
-    try:
-        resp = requests.get(f'http://{SERVER}/proxy')
-        r = resp.text
-    except Exception as e:
-        print(e)
+    if USE_PROXY:
+        try:
+            resp = requests.get(f'http://{SERVER}/proxy')
+            r = resp.text
+        except Exception as e:
+            print(e)
     return r
 
 
