@@ -36,11 +36,14 @@ class MovieSpider(scrapy.Spider):
             movie['writer'] = info.css("span.pl:contains('编剧')+span>a::text").getall()
             movie['starring'] = info.css("a[rel='v:starring']::text").getall()
             movie['genre'] = info.css("span[property='v:genre']::text").getall()
-            movie['area'] = info.re('<span class="pl">制片国家/地区:</span>(.*?)<br>')[0].split("/")
-            movie['language'] = info.re('<span class="pl">语言:</span>(.*?)<br>')[0].split("/")
+            area = info.re('<span class="pl">制片国家/地区:</span>(.*?)<br>')
+            movie['area'] = area[0].split("/") if area else None
+            language = info.re('<span class="pl">语言:</span>(.*?)<br>')
+            movie['language'] = language[0].split("/") if language else None
             movie['release_date'] = info.css("span[property='v:initialReleaseDate']::text").getall()
             movie['runtime'] = info.css("span[property='v:runtime']::text").getall()
-            movie['alias'] = info.re('<span class="pl">又名:</span>(.*?)<br>')[0].split("/")
+            alias = info.re('<span class="pl">又名:</span>(.*?)<br>')
+            movie['alias'] = alias[0].split("/") if alias else None
             movie['rating'] = rating.css("strong[property='v:average']::text").get()
             movie['comments_num'] = rating.css("span[property='v:votes']::text").get()
             movie['summary'] = response.css("div#link-report > span[property='v:summary']::text").getall()
