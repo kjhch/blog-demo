@@ -1,6 +1,10 @@
 #include <stdio.h>
-#include "../head/hello.h"
+// #include "../include/hello.h"
+// #include "../include/hello_name.h"
+
 /* 
+    注意：此处就算不导入头文件也没关系，只要在调用hello的文件（main.c）中include即可
+
     1) 制作静态链接库：
     gcc hello.c -c -o ../lib/hello.o
     cd ../lib 
