@@ -1,6 +1,8 @@
 #include <stdio.h>
+#define byte char
 /* 
     sizeof(void): 1
+    sizeof(byte): 1, sizeof(unsigned byte): 1
     sizeof(char): 1, sizeof(unsigned char): 1
     sizeof(short): 2, sizeof(unsigned short): 2
     sizeof(int): 4, sizeof(unsigned int): 4
@@ -12,6 +14,7 @@
 int main(int argc, char const *argv[])
 {
     printf("sizeof(void): %lu\n", sizeof(void));
+    printf("sizeof(byte): %lu, sizeof(unsigned byte): %lu\n", sizeof(byte), sizeof(unsigned byte));
     printf("sizeof(char): %lu, sizeof(unsigned char): %lu\n", sizeof(char), sizeof(unsigned char));
     printf("sizeof(short): %lu, sizeof(unsigned short): %lu\n", sizeof(short), sizeof(unsigned short));
     printf("sizeof(int): %lu, sizeof(unsigned int): %lu\n", sizeof(int), sizeof(unsigned int));

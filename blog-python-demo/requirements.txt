@@ -3,3 +3,4 @@ requests==2.24.0
 pymongo==3.11.0
 kafka-python==2.0.1
 pyhanlp==0.1.66
+python-miio==0.5.5.2
